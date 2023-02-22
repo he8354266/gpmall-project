@@ -4,10 +4,7 @@ import com.gpmall.commons.result.ResponseData;
 import com.gpmall.commons.result.ResponseUtil;
 import com.gpmall.shopping.ICartService;
 import com.gpmall.shopping.constans.ShoppingRetCode;
-import com.gpmall.shopping.dto.AddCartRequest;
-import com.gpmall.shopping.dto.AddCartResponse;
-import com.gpmall.shopping.dto.CartListByIdRequest;
-import com.gpmall.shopping.dto.CartListByIdResponse;
+import com.gpmall.shopping.dto.*;
 import com.gpmall.shopping.form.CartForm;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -53,6 +50,22 @@ public class CartController {
         request.setNum(cartForm.getProductNum());
         request.setUserId(cartForm.getUserId());
         AddCartResponse response = iCartService.addToCart(request);
+        if (response.getCode().equals(ShoppingRetCode.SUCCESS.getCode())) {
+            return new ResponseUtil().setData(response.getMsg());
+        }
+        return new ResponseUtil().setErrorMsg(response.getMsg());
+    }
+
+    @PutMapping("/carts")
+    @ApiOperation("更新购物车中的商品")
+    @ApiImplicitParam(name = "cartForm", value = "购物车信息", dataType = "CartForm", required = true)
+    public ResponseData updateCarts(@RequestBody CartForm cartForm) {
+        UpdateCartNumRequest request = new UpdateCartNumRequest();
+        request.setChecked(cartForm.getChecked());
+        request.setItemId(cartForm.getProductId());
+        request.setNum(cartForm.getProductNum());
+        request.setUserId(cartForm.getUserId());
+        UpdateCartNumResponse response = iCartService.updateCartNum(request);
         if (response.getCode().equals(ShoppingRetCode.SUCCESS.getCode())) {
             return new ResponseUtil().setData(response.getMsg());
         }
