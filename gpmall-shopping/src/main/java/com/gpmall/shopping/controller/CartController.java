@@ -110,4 +110,44 @@ public class CartController {
         }
         return new ResponseUtil().setErrorMsg(response.getMsg());
     }
+
+    /**
+     * 对购物车的全选操作
+     *
+     * @param cartForm
+     * @return
+     */
+    @ApiOperation("对购物车的全选操作")
+    @PutMapping("/items")
+    @ApiImplicitParam(name = "cartForm", value = "购物车信息", dataType = "CartForm", required = true)
+    public ResponseData checkCarts(@RequestBody CartForm cartForm) {
+        CheckAllItemRequest request = new CheckAllItemRequest();
+        request.setChecked(cartForm.getChecked());
+        request.setUserId(cartForm.getUserId());
+        CheckAllItemResponse response = iCartService.checkAllCartItem(request);
+        if (response.getCode().equals(ShoppingRetCode.SUCCESS.getCode())) {
+            return new ResponseUtil().setData(response.getMsg());
+        }
+        return new ResponseUtil().setErrorMsg(response.getMsg());
+    }
+
+    /**
+     * 删除购物车中选中的商品
+     *
+     * @param id
+     * @return
+     */
+    @ApiOperation("删除购物车中选中的商品")
+    @DeleteMapping("/items/{id}")
+    @ApiImplicitParam(name = "id", value = "商品ID", paramType = "path")
+    public ResponseData deleteCheckCartItem(@PathVariable("id") Long id) {
+        DeleteCheckedItemRequest request = new DeleteCheckedItemRequest();
+        request.setUserId(id);
+        request.setUserId(request.getUserId());
+        DeleteCheckedItemResposne response = iCartService.deleteCheckedItem(request);
+        if (response.getCode().equals(ShoppingRetCode.SUCCESS.getCode())) {
+            return new ResponseUtil().setData(response.getMsg());
+        }
+        return new ResponseUtil().setErrorMsg(response.getMsg());
+    }
 }
