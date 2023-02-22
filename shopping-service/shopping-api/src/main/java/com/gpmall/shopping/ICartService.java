@@ -42,7 +42,7 @@ public interface ICartService {
      * @param request
      * @return
      */
-    DeleteCartItemResponse deleteCartItem(DeleteCartItemRequest request);
+    DeleteCheckedItemResposne deleteCartItem(DeleteCartItemRequest request);
 
     /**
      * 删除选中的商品
