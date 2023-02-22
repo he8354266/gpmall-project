@@ -15,7 +15,13 @@ import java.util.List;
  **/
 @Mapper(componentModel = "spring")
 public interface ProductConverter {
-    @Mappings({@Mapping(source = "id", target = "productId"), @Mapping(source = "title", target = "productName"), @Mapping(source = "price", target = "salePrice"), @Mapping(source = "sellPoint", target = "subTitle"), @Mapping(source = "imageBig", target = "picUrl")})
+    @Mappings({
+            @Mapping(source = "id", target = "productId"),
+            @Mapping(source = "title", target = "productName"),
+            @Mapping(source = "price", target = "salePrice"),
+            @Mapping(source = "sellPoint", target = "subTitle"),
+            @Mapping(source = "imageBig", target = "picUrl")
+    })
     ProductDto item2Dto(Item item);
 
     List<ProductDto> items2Dto(List<Item> items);
