@@ -151,12 +151,42 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     public DeleteCheckedItemResposne deleteCheckedItem(DeleteCheckedItemRequest request) {
+        DeleteCheckedItemResposne response = new DeleteCheckedItemResposne();
+        try {
+            RMap itemMap = redissonClient.getMap(generatorCartItemKey(request.getUserId()));
+            itemMap.values().forEach(obj -> {
+                CartProductDto cartProductDto = JSON.parseObject(obj.toString(), CartProductDto.class);
+                if ("true".equals(cartProductDto.getChecked())) {
+                    itemMap.remove(cartProductDto.getProductId());
+                }
+            });
+            response.setCode(ShoppingRetCode.SUCCESS.getCode());
+            response.setMsg(ShoppingRetCode.SUCCESS.getMessage());
+        }catch (Exception e){
+            log.error("CartServiceImpl.deleteCheckedItem Occur Exception :"+e);
+            ExceptionProcessorUtils.wrapperHandlerException(response,e);
+        }
         return null;
     }
 
     @Override
     public ClearCartItemResponse clearCartItemByUserID(ClearCartItemRequest request) {
-        return null;
+        ClearCartItemResponse response=new ClearCartItemResponse();
+        try{
+            RMap itemMap = redissonClient.getMap(generatorCartItemKey(request.getUserId()));
+            itemMap.values().forEach(obj -> {
+                CartProductDto cartProductDto = JSON.parseObject(obj.toString(), CartProductDto.class);
+                if(request.getProductIds().contains(cartProductDto.getProductId())){
+                    itemMap.remove(cartProductDto.getProductId());
+                }
+            });
+            response.setCode(ShoppingRetCode.SUCCESS.getCode());
+            response.setMsg(ShoppingRetCode.SUCCESS.getMessage());
+        }catch (Exception e){
+            log.error("CartServiceImpl.clearCartItemByUserID Occur Exception :"+e);
+            ExceptionProcessorUtils.wrapperHandlerException(response,e);
+        }
+        return response;
     }
 
     private String generatorCartItemKey(long userId) {
