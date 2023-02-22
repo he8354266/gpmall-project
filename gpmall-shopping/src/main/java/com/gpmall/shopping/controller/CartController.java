@@ -7,6 +7,7 @@ import com.gpmall.shopping.constans.ShoppingRetCode;
 import com.gpmall.shopping.dto.*;
 import com.gpmall.shopping.form.CartForm;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,12 @@ public class CartController {
     private ICartService iCartService;
 
 
+    /**
+     * 获得购物车列表
+     *
+     * @param request
+     * @return
+     */
     @GetMapping("/carts")
     @ApiOperation("获得购物车列表")
     public ResponseData carts(HttpServletRequest request) {
@@ -41,6 +48,12 @@ public class CartController {
         return new ResponseUtil().setErrorMsg(response.getMsg());
     }
 
+    /**
+     * 添加商品到购物车
+     *
+     * @param cartForm
+     * @return
+     */
     @PostMapping("/carts")
     @ApiOperation("添加商品到购物车")
     @ApiImplicitParam(name = "cartForm", value = "购物车信息", dataType = "CartForm", required = true)
@@ -56,6 +69,12 @@ public class CartController {
         return new ResponseUtil().setErrorMsg(response.getMsg());
     }
 
+    /**
+     * 更新购物车中的商品
+     *
+     * @param cartForm
+     * @return
+     */
     @PutMapping("/carts")
     @ApiOperation("更新购物车中的商品")
     @ApiImplicitParam(name = "cartForm", value = "购物车信息", dataType = "CartForm", required = true)
@@ -66,6 +85,26 @@ public class CartController {
         request.setNum(cartForm.getProductNum());
         request.setUserId(cartForm.getUserId());
         UpdateCartNumResponse response = iCartService.updateCartNum(request);
+        if (response.getCode().equals(ShoppingRetCode.SUCCESS.getCode())) {
+            return new ResponseUtil().setData(response.getMsg());
+        }
+        return new ResponseUtil().setErrorMsg(response.getMsg());
+    }
+
+
+    /**
+     * 删除购物车中的商品
+     *
+     * @return
+     */
+    @ApiOperation("删除购物车中的商品")
+    @DeleteMapping("/carts/{uid}/{pid}")
+    @ApiImplicitParams({@ApiImplicitParam(name = "uid", value = "用户ID", paramType = "path"), @ApiImplicitParam(name = "pid", value = "商品ID", paramType = "path")})
+    public ResponseData deleteCarts(@PathVariable("uid") long uid, @PathVariable("pid") long pid) {
+        DeleteCartItemRequest request = new DeleteCartItemRequest();
+        request.setUserId(uid);
+        request.setItemId(pid);
+        DeleteCheckedItemResposne response = iCartService.deleteCartItem(request);
         if (response.getCode().equals(ShoppingRetCode.SUCCESS.getCode())) {
             return new ResponseUtil().setData(response.getMsg());
         }
