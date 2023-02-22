@@ -25,7 +25,7 @@ public class GlobalConstants {
     public final static String HOMEPAGE_CACHE_KEY="home_page";//商品详情缓存前缀
     public final static int HOMEPAGE_EXPIRE_TIME=1; //过期时间
 
-
+    public final static String PANEL_CONTENT_KEY="panelContents"; //商品广告链接
     public final static String CART_ITEM_CACHE_PREFIX="cart_item";
 
 }
