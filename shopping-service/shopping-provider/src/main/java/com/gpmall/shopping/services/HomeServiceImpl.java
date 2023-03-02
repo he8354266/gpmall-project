@@ -6,6 +6,7 @@ import com.gpmall.shopping.constans.ShoppingRetCode;
 import com.gpmall.shopping.constant.GlobalConstants;
 import com.gpmall.shopping.converter.ContentConverter;
 import com.gpmall.shopping.dal.entitys.Panel;
+import com.gpmall.shopping.dal.entitys.PanelContentItem;
 import com.gpmall.shopping.dal.persistence.PanelContentMapper;
 import com.gpmall.shopping.dal.persistence.PanelMapper;
 import com.gpmall.shopping.dto.HomePageResponse;
@@ -14,6 +15,7 @@ import com.gpmall.shopping.services.cache.CacheManager;
 import com.gpmall.shopping.utils.ExceptionProcessorUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +64,20 @@ public class HomeServiceImpl implements IHomeService {
             Example panelExample = new Example(Panel.class);
             Example.Criteria criteria = panelExample.createCriteria();
             criteria.andEqualTo("position", 0);
-            criteria.andEqualTo("status",1);
+            criteria.andEqualTo("status", 1);
+            panelExample.setOrderByClause("sort_order");
+            List<Panel> panels = panelMapper.selectByExample(panelExample);
+            Set<PanelDto> panelContentItemDtos = new HashSet<PanelDto>();
+            panels.parallelStream().forEach(panel -> {
+                List<PanelContentItem> panelContentItems = panelContentMapper.selectPanelContentAndProductWithPanelId(panel.getId());
+                PanelDto panelDto = contentConverter.panen2Dto(panel);
+                if (CollectionUtils.isNotEmpty(panelContentItems)) {
+                    panelDto.setPanelContentItems(contentConverter.panelContentItem2Dto(panelContentItems));
+                    panelContentItemDtos.add(panelDto);
+                }
+            });
+            cacheManager.setCache(GlobalConstants.HOMEPAGE_CACHE_KEY, JSON.toJSONString(panelContentItemDtos), GlobalConstants.HOMEPAGE_EXPIRE_TIME);
+            response.setPanelContentItemDtos(panelContentItemDtos);
         } catch (Exception e) {
             log.error("HomeServiceImpl.homepage Occur Exception :" + e);
             ExceptionProcessorUtils.wrapperHandlerException(response, e);
