@@ -82,6 +82,6 @@ public class HomeServiceImpl implements IHomeService {
             log.error("HomeServiceImpl.homepage Occur Exception :" + e);
             ExceptionProcessorUtils.wrapperHandlerException(response, e);
         }
-        return null;
+        return response;
     }
 }

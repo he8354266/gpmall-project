@@ -10,6 +10,8 @@ import com.gpmall.shopping.converter.ContentConverter;
 import com.gpmall.shopping.converter.ProductConverter;
 import com.gpmall.shopping.dal.entitys.Item;
 import com.gpmall.shopping.dal.entitys.ItemDesc;
+import com.gpmall.shopping.dal.entitys.Panel;
+import com.gpmall.shopping.dal.entitys.PanelContentItem;
 import com.gpmall.shopping.dal.persistence.ItemDescMapper;
 import com.gpmall.shopping.dal.persistence.ItemMapper;
 import com.gpmall.shopping.dal.persistence.PanelContentMapper;
@@ -21,10 +23,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -119,7 +123,35 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public RecommendResponse getRecommendGoods() {
-        return null;
+        RecommendResponse response = new RecommendResponse();
+        response.setCode(ShoppingRetCode.SUCCESS.getCode());
+        response.setMsg(ShoppingRetCode.SUCCESS.getMessage());
+        try {
+            String json = cacheManager.checkCache(GlobalConstants.RECOMMEND_PANEL_CACHE_KEY);
+            if (StringUtils.isNotBlank(json)) {
+                List<PanelDto> panelContentItemDtoList = JSON.parseArray(json, PanelDto.class);
+                HashSet<PanelDto> panelDtos = new HashSet<>(panelContentItemDtoList);
+                response.setPanelContentItemDtos(panelDtos);
+                return response;
+            }
+            List<Panel> panels = panelMapper.selectPanelContentById(GlobalConstants.RECOMMEND_PANEL_ID);
+            if (CollectionUtils.isEmpty(panels)) {
+                return response;
+            }
+            HashSet<PanelDto> panelContentItemDtos = new HashSet<>();
+            panels.stream().forEach(panel -> {
+                List<PanelContentItem> panelContentItems = panelContentMapper.selectPanelContentAndProductWithPanelId(panel.getId());
+                PanelDto panelDto = contentConverter.panen2Dto(panel);
+                panelDto.setPanelContentItems(contentConverter.panelContentItem2Dto(panelContentItems));
+                panelContentItemDtos.add(panelDto);
+            });
+            response.setPanelContentItemDtos(panelContentItemDtos);
+            cacheManager.setCache(GlobalConstants.RECOMMEND_PANEL_CACHE_KEY, JSON.toJSONString(panelContentItemDtos), GlobalConstants.RECOMMEND_CACHE_EXPIRE);
+        } catch (Exception e) {
+            log.error("ProductServiceImpl.getAllProduct Occur Exception :" + e);
+            ExceptionProcessorUtils.wrapperHandlerException(response, e);
+        }
+        return response;
     }
 
     private String generatorProduceCacheKey(ProductDetailRequest request) {

@@ -81,6 +81,12 @@
             <groupId>com.spring4all</groupId>
             <artifactId>swagger-spring-boot-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.gpmall.user</groupId>
+            <artifactId>user-sdk</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
