@@ -9,7 +9,7 @@ import com.gpmall.user.dto.*;
 import com.gpmall.user.utils.ExceptionProcessorUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.apache.dubbo.config.annotation.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
