@@ -17,7 +17,7 @@ public class AddressListRequest extends AbstractRequest {
 
     @Override
     public void requestCheck() {
-        if(userId==null){
+        if (userId == null) {
             throw new ValidateException(
                     SysRetCodeConstants.REQUEST_CHECK_FAILURE.getCode(),
                     SysRetCodeConstants.REQUEST_CHECK_FAILURE.getMessage());

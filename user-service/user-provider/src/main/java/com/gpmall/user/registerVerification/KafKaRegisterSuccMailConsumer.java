@@ -50,6 +50,7 @@ public class KafKaRegisterSuccMailConsumer {
             Map<String, Object> viewObj = new HashMap<>();
             viewObj.put("url", emailConfig.getUserMailActiveUrl() + "?username=" + userVerifyMap.get("username") + "&email" + userVerifyMap.get("key"));
             viewObj.put("title", emailConfig.getSubject());
+            defaultEmailSender.sendMail(mailData);
         } catch (Exception e) {
             e.printStackTrace();
         }
