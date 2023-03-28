@@ -50,12 +50,46 @@ public class AddressServiceImpl implements IAddressService {
 
     @Override
     public AddressDetailResponse addressDetail(AddressDetailRequest request) {
-        return null;
+        AddressDetailResponse response = new AddressDetailResponse();
+        try {
+            request.requestCheck();
+            Address address = addressMapper.selectByPrimaryKey(request.getAddressId());
+            response.setAddressDto(converter.address2List(address));
+            response.setCode(SysRetCodeConstants.SUCCESS.getCode());
+            response.setMsg(SysRetCodeConstants.SUCCESS.getMessage());
+        } catch (Exception e) {
+            log.error("AddressServiceImpl.addressDetail occur Exception :" + e);
+            ExceptionProcessorUtils.wrapperHandlerException(response, e);
+        }
+        return response;
     }
 
     @Override
     public AddAddressResponse createAddress(AddAddressRequest request) {
+        log.error("AddressServiceImpl.createAddress request :" + request);
+        AddAddressResponse response = new AddAddressResponse();
+        try {
+            request.requestCheck();
+        } catch (Exception e) {
+            log.error("AddressServiceImpl.createAddress occur Exception :" + e);
+            ExceptionProcessorUtils.wrapperHandlerException(response, e);
+        }
         return null;
+    }
+
+    /**
+     * @return void
+     * @Description //地址只能有一个是默认的
+     * @Param [boolean, java.lang.Long]
+     * @Date 2023/3/28 10:41
+     * @Author hy
+     **/
+    private void checkAddressDefaultUnique(boolean isDefault, Long userId) {
+        if (isDefault) {
+            Example example = new Example(Address.class);
+            example.createCriteria().andEqualTo("userId", userId);
+            List<Address> addresses = addressMapper.selectByExample(example);
+        }
     }
 
     @Override
