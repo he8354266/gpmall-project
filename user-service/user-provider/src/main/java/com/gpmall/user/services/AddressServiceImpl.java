@@ -70,11 +70,17 @@ public class AddressServiceImpl implements IAddressService {
         AddAddressResponse response = new AddAddressResponse();
         try {
             request.requestCheck();
+            checkAddressDefaultUnique(request.getIsDefault() != null && request.getIsDefault() == 1, request.getUserId());
+            Address address = converter.req2Address(request);
+            int row = addressMapper.insert(address);
+            response.setCode(SysRetCodeConstants.SUCCESS.getCode());
+            response.setMsg(SysRetCodeConstants.SUCCESS.getMessage());
+            log.info("AddressServiceImpl.createAddress effect row :" + row);
         } catch (Exception e) {
             log.error("AddressServiceImpl.createAddress occur Exception :" + e);
             ExceptionProcessorUtils.wrapperHandlerException(response, e);
         }
-        return null;
+        return response;
     }
 
     /**
@@ -89,16 +95,48 @@ public class AddressServiceImpl implements IAddressService {
             Example example = new Example(Address.class);
             example.createCriteria().andEqualTo("userId", userId);
             List<Address> addresses = addressMapper.selectByExample(example);
+            addresses.parallelStream().forEach(address -> {
+                if (address.getIsDefault() == 1) {
+                    address.setIsDefault(1);
+                    addressMapper.updateByPrimaryKey(address);
+                }
+            });
         }
     }
 
     @Override
     public UpdateAddressResponse updateAddress(UpdateAddressRequest request) {
-        return null;
+        log.error("begin - AddressServiceImpl.updateAddress request :" + request);
+        UpdateAddressResponse response = new UpdateAddressResponse();
+        try {
+            request.requestCheck();
+            checkAddressDefaultUnique(request.getIsDefault() == 1, request.getUserId());
+            Address address = converter.req2Address(request);
+            int row = addressMapper.updateByPrimaryKey(address);
+            response.setMsg(SysRetCodeConstants.SUCCESS.getMessage());
+            response.setCode(SysRetCodeConstants.SUCCESS.getCode());
+            log.info("AddressServiceImpl.createAddress effect row :" + row);
+        } catch (Exception e) {
+            log.error("AddressServiceImpl.updateAddress occur Exception :" + e);
+            ExceptionProcessorUtils.wrapperHandlerException(response, e);
+        }
+        return response;
     }
 
     @Override
     public DeleteAddressResponse deleteAddress(DeleteAddressRequest request) {
-        return null;
+        log.error("begin - AddressServiceImpl.deleteAddress request :" + request);
+        DeleteAddressResponse response = new DeleteAddressResponse();
+        try {
+            request.requestCheck();
+            int row = addressMapper.deleteByPrimaryKey(request.getAddressId());
+            response.setCode(row > 0 ? SysRetCodeConstants.SUCCESS.getCode() : SysRetCodeConstants.DATA_NOT_EXIST.getCode());
+            response.setMsg(row > 0 ? SysRetCodeConstants.SUCCESS.getMessage() : SysRetCodeConstants.DATA_NOT_EXIST.getMessage());
+            log.info("AddressServiceImpl.deleteAddress effect row :"+row);
+        } catch (Exception e) {
+            log.error("AddressServiceImpl.deleteAddress occur Exception :" + e);
+            ExceptionProcessorUtils.wrapperHandlerException(response, e);
+        }
+        return response;
     }
 }
