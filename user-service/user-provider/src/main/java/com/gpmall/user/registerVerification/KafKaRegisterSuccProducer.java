@@ -17,7 +17,7 @@ import java.util.Map;
 @Slf4j
 public class KafKaRegisterSuccProducer {
     @Autowired
-//    @Qualifier("registerSuccInfoTemplate")
+    @Qualifier("registerSuccInfoTemplate")
     private KafkaTemplate kafkaTemplate;
 
     private final static String topic = "user-register-succ-topic";
