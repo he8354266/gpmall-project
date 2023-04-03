@@ -32,7 +32,7 @@ public class EmailTest {
     public void sendMail() throws Exception {
         for (int i = 0; i <= 3; i++) {
             MailData mailData = new MailData();
-            mailData.setToAddresss(Arrays.asList("shuaike@chinasie.com"));
+            mailData.setToAddresss(Arrays.asList("453159575@qq.com"));
             mailData.setContent("hello");
             mailData.setSubject("文件地址");
             Map<String, Object> viewObj = new HashMap<>();

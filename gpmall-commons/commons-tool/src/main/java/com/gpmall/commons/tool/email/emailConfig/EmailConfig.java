@@ -44,7 +44,14 @@ public class EmailConfig {
 
     private String mailDebug = "false";//默认值是false
 
-    /**发送哦html时指定的content-type**/
+
+    private String sslEnable;
+
+    private String sslProtocols;
+
+    /**
+     * 发送哦html时指定的content-type
+     **/
     private String content_type = "text/html; charset=utf-8";
     //邮件模板的路劲
     private String templatePath = "emailTemplate";
@@ -53,22 +60,25 @@ public class EmailConfig {
     private String userMailActiveUrl;
 
 
-    public Properties getProperties(){
+    public Properties getProperties() {
         Properties properties = new Properties();
         properties.put("mail.smtp.host", this.mailServerHost);
         properties.put("mail.smtp.port", this.mailServerPort);
         properties.put("mail.smtp.auth", this.mailSmtpAuth);
+        properties.put("mail.smtp.ssl.enable", "true");
+        properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
         return properties;
     }
 
     /**
      * 获得收件人地址
+     *
      * @return
      */
-    public Address[] getToInternetAddress(){
+    public Address[] getToInternetAddress() {
         Address[] addresses = new Address[]{};
         List<InternetAddress> internetAddressList = new ArrayList<>();
-        toAddresss.forEach(toAddress->{
+        toAddresss.forEach(toAddress -> {
             try {
                 internetAddressList.add(new InternetAddress(toAddress));
             } catch (AddressException e) {
@@ -80,12 +90,13 @@ public class EmailConfig {
 
     /**
      * 获得抄送地址
+     *
      * @return
      */
-    public Address[] getCcInternetAddress(){
+    public Address[] getCcInternetAddress() {
         Address[] addresses = new Address[]{};
         List<InternetAddress> internetAddressList = new ArrayList<>();
-        toAddresss.forEach(toAddress->{
+        toAddresss.forEach(toAddress -> {
             try {
                 internetAddressList.add(new InternetAddress(toAddress));
             } catch (AddressException e) {

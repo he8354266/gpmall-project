@@ -112,6 +112,8 @@ public class DefaultEmailSender extends AbstractEmailSender {
         message.addRecipients(Message.RecipientType.CC ,mailData.getCcInternetAddress());
         //邮件主题
         message.setSubject(mailData.getSubject());
+
+
         //邮件内容
         Multipart multipart = new MimeMultipart();
             BodyPart bodyPart = new MimeBodyPart();
@@ -193,6 +195,7 @@ public class DefaultEmailSender extends AbstractEmailSender {
         }
         Session session = Session.getDefaultInstance(emailConfig.getProperties(),authenticator);
         /**创建邮件信心**/
+
         Message message = new MimeMessage(session);
         //发送地址
         message.setFrom(new InternetAddress(emailConfig.getFromAddress()));
