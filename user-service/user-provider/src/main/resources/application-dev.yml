@@ -33,7 +33,7 @@ spring:
   ##以下下配置是springboot autoconfig 认初始化时会加载的参数，但是user可以重现构建一下参数
   ##自定义构造的bean可查看kafkaConfig
   kafka:
-    bootstrapServers: kafka.gpmall.com:9092,kafka.gpmall.com:9092
+    bootstrapServers: localhost:9092,localhost:9092
     consumer:
       auto-offset-reset: latest
       key-serializer: org.apache.kafka.common.serialization.StringDeserializer
