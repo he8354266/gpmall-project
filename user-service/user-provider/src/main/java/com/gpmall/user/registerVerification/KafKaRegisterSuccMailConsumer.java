@@ -9,9 +9,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @Description //TODO 邮件激活功能发送注册消息给kafka kafka消费信息发送给邮件
@@ -32,7 +31,7 @@ public class KafKaRegisterSuccMailConsumer {
     @KafkaListener(id = "", topics = topic, containerFactory = "userRegisterSuccKafkaListenerContainerFactory", groupId = group_id)
     public void receiveInfo(Map userVerifyMap, Acknowledgment acknowledgment) {
         try {
-            log.info("收到一条注册消息" + userVerifyMap);
+            log.warn("收到一条注册消息" + userVerifyMap);
             sendMail(userVerifyMap);
             acknowledgment.acknowledge();//手动提交信息
         } catch (Exception e) {
@@ -43,14 +42,22 @@ public class KafKaRegisterSuccMailConsumer {
 
     public void sendMail(Map userVerifyMap) {
         try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             MailData mailData = new MailData();
             mailData.setToAddresss(Arrays.asList(String.valueOf(userVerifyMap.get("email"))));
             mailData.setSubject(emailConfig.getSubject());
             mailData.setContent("用户激活邮件");
+            mailData.setFileName("activeRegisterInfoHtmlTemplate.html");
+
+            mailData.setAttachFileNames(new Vector<>(Arrays.asList("F:\\testmain.txt", "F:\\TEST.txt")));
             Map<String, Object> viewObj = new HashMap<>();
             viewObj.put("url", emailConfig.getUserMailActiveUrl() + "?username=" + userVerifyMap.get("username") + "&email" + userVerifyMap.get("key"));
             viewObj.put("title", emailConfig.getSubject());
-            defaultEmailSender.sendMail(mailData);
+            viewObj.put("email", userVerifyMap.get("email"));
+            viewObj.put("createTime", simpleDateFormat.format(new Date()));
+
+            mailData.setDataMap(viewObj);
+            defaultEmailSender.sendHtmlMailUseTemplate(mailData);
         } catch (Exception e) {
             e.printStackTrace();
         }
