@@ -1,4 +1,4 @@
-package com.gpmall.order.context;
+package com.gpmall.order.biz.context;
 
 import com.gpmall.order.dto.CartProductDto;
 import lombok.Data;

@@ -1,10 +1,12 @@
-package com.gpmall.order.convert;
+package com.gpmall.order.biz.convert;
 
 import com.gpmall.commons.result.AbstractRequest;
 import com.gpmall.commons.result.AbstractResponse;
-import com.gpmall.order.context.CreateOrderContext;
-import com.gpmall.order.context.TransHandlerContext;
+import com.gpmall.order.constant.OrderRetCode;
+import com.gpmall.order.biz.context.CreateOrderContext;
+import com.gpmall.order.biz.context.TransHandlerContext;
 import com.gpmall.order.dto.CreateOrderRequest;
+import com.gpmall.order.dto.CreateOrderResponse;
 
 /**
  * @Description //TODO
@@ -29,6 +31,11 @@ public class CreateOrderConvert implements TransConvert {
 
     @Override
     public AbstractResponse convertCtx2Respond(TransHandlerContext ctx) {
-        return null;
+        CreateOrderContext createOrderContext = (CreateOrderContext) ctx;
+        CreateOrderResponse createOrderResponse = new CreateOrderResponse();
+        createOrderResponse.setOrderId(createOrderContext.getOrderId());
+        createOrderResponse.setCode(OrderRetCode.SUCCESS.getCode());
+        createOrderResponse.setMsg(OrderRetCode.SUCCESS.getMessage());
+        return createOrderResponse;
     }
 }

@@ -1,6 +1,6 @@
-package com.gpmall.order.context;
+package com.gpmall.order.biz.context;
 
-import com.gpmall.order.convert.TransConvert;
+import com.gpmall.order.biz.convert.TransConvert;
 import lombok.Data;
 
 /**
