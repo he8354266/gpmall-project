@@ -51,7 +51,6 @@ public class MemberServiceImpl implements IMemberService {
             queryMemberResponse = memberConverter.member2Res(member);
             queryMemberResponse.setCode(SysRetCodeConstants.SUCCESS.getCode());
             queryMemberResponse.setMsg(SysRetCodeConstants.SUCCESS.getMessage());
-            return null;
         } catch (Exception e) {
             log.error("MemberServiceImpl.queryMemberById Occur Exception :" + e);
             ExceptionProcessorUtils.wrapperHandlerException(queryMemberResponse, e);
