@@ -7,7 +7,9 @@ import com.gpmall.order.dal.entitys.Stock;
 import com.gpmall.order.dal.persistence.OrderItemMapper;
 import com.gpmall.order.dal.persistence.StockMapper;
 import com.gpmall.order.dto.CartProductDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -19,6 +21,8 @@ import java.util.Objects;
  * @Date 2023/4/13 9:45
  * @Author hy
  **/
+@Component
+@Slf4j
 public class SubStockHandler extends AbstractTransHandler {
     @Resource
     private StockMapper stockMapper;
