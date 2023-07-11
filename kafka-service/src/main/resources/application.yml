@@ -1,0 +1,17 @@
+server:
+  port: 8186
+  servlet:
+    context-path: /dume
+    session:
+      timeout: 30m #30分钟，测试的话时间不能太短，否
+kafkaserver:
+  server: 192.168.100.128:9092,192.168.100.129:9092,192.168.100.130:9092
+  topic: topic1
+  parttition: 0
+  group-id: dume
+spring:
+  kafka:
+    bootstrap-servers: 192.168.100.128:9092,192.168.100.129:9092,192.168.100.130:9092
+    consumer:
+      group-id: dume #设置消费者的groupid
+
