@@ -6,10 +6,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import javax.annotation.Resource;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -26,14 +28,19 @@ public class KafkaProducerManager {
     @Autowired
     @Qualifier("kafkaTemplate")
     private KafkaTemplate kafkaTemplate;
+
     /**
      * producer 同步方式发送数据
      *
      * @param topic   topic名称
      * @param message producer发送的数据
      */
+    @Async
     public void sendMessageSync(String topic, String message) throws InterruptedException, ExecutionException, TimeoutException {
-        kafkaTemplate.send(topic, message).get(10, TimeUnit.SECONDS);
+        for (int i = 0; i < 100; i++) {
+            Thread.sleep(3000);
+            kafkaTemplate.send(topic, UUID.randomUUID().toString()).get(10, TimeUnit.SECONDS);
+        }
     }
 
     /**
@@ -51,8 +58,7 @@ public class KafkaProducerManager {
 
             @Override
             public void onSuccess(Object o) {
-//                logger.info("kafka send  success !");
-
+                logger.info("kafka send  success !");
             }
         });
     }

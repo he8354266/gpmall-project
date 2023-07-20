@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.TopicPartition;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -22,9 +23,11 @@ import java.util.Optional;
 public class KafkaComsumerManager {
     private static Logger logger = LoggerFactory.getLogger("adminLogger");
     private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     /**
      * 指定topic
      * 指定消费分区parttition
+     *
      * @param records
      */
 //    @KafkaListener(topicPartitions = {
@@ -57,14 +60,15 @@ public class KafkaComsumerManager {
 //        }
 //
 //    }
-
     @KafkaListener(topics = "${kafkaserver.topic}")
-    public void onMessage(ConsumerRecord<String,String> record){
+    @Async
+    public void onMessage(ConsumerRecord<String, String> record) {
         Long current = System.currentTimeMillis();
         logger.info("**********************************kafka接收信息打印开始**************************************");
         logger.info("kafka接收信息：" + '\t' + record.toString());
         logger.info("kafka数据：" + '\t' + record.value());
         logger.info("分区：" + record.partition());
+        logger.info("线程：" + Thread.currentThread().getName());
         logger.info("偏移量：" + record.offset());
         logger.info("报文时间：" + formatter.format(record.timestamp()));
         logger.info("系统时间：" + formatter.format(current));

@@ -35,7 +35,7 @@ public class KafkaController {
 
     @PostMapping("/producerData")
     public JSONObject producerData(@RequestBody Object object) throws ExecutionException, InterruptedException, TimeoutException {
-        kafkaTemplate.send("topic1", JSONObject.toJSONString(object));//使用send方法发送消息，需要传入topic名称
+        kafkaProducerManager.sendMessageSync("topic1", JSONObject.toJSONString(object));
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("msg", producersuccess);
         logger.info(producersuccess);
