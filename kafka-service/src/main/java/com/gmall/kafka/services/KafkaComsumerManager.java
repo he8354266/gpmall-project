@@ -64,15 +64,15 @@ public class KafkaComsumerManager {
     @Async
     public void onMessage(ConsumerRecord<String, String> record) {
         Long current = System.currentTimeMillis();
-        logger.info("**********************************kafka接收信息打印开始**************************************");
-        logger.info("kafka接收信息：" + '\t' + record.toString());
-        logger.info("kafka数据：" + '\t' + record.value());
-        logger.info("分区：" + record.partition());
-        logger.info("线程：" + Thread.currentThread().getName());
-        logger.info("偏移量：" + record.offset());
-        logger.info("报文时间：" + formatter.format(record.timestamp()));
-        logger.info("系统时间：" + formatter.format(current));
-        logger.info("**********************************kafka信息打印结束**************************************");
+//        logger.info("**********************************kafka接收信息打印开始**************************************");
+//        logger.info("kafka接收信息：" + '\t' + record.toString());
+//        logger.info("kafka数据：" + '\t' + record.value());
+//        logger.info("分区：" + record.partition());
+//        logger.info("线程：" + Thread.currentThread().getName());
+//        logger.info("偏移量：" + record.offset());
+//        logger.info("报文时间：" + formatter.format(record.timestamp()));
+//        logger.info("系统时间：" + formatter.format(current));
+//        logger.info("**********************************kafka信息打印结束**************************************");
     }
 
 }
